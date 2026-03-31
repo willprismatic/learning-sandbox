@@ -1,0 +1,21 @@
+# ngrok Configuration for SE Bootcamp Demo App
+#
+# Setup Instructions:
+# 1. Get your authtoken from https://dashboard.ngrok.com/get-started/your-authtoken
+# 2. Reserve a static domain at https://dashboard.ngrok.com/domains (free tier includes 1 domain)
+# 3. Copy this file to ngrok.yml: cp ngrok.yml.example ngrok.yml
+# 4. Replace YOUR_NGROK_AUTHTOKEN_HERE with your actual authtoken
+# 5. Replace YOUR_DOMAIN.ngrok.io with your reserved domain (e.g., se-john.ngrok.io)
+# 6. Start ngrok: ngrok start --config=ngrok.yml se-bootcamp
+#
+# Documentation: https://ngrok.com/docs/agent/config/
+
+version: 3
+agent:
+  authtoken: ...
+endpoints:
+  - name: prismatic-sandbox
+    url: https://prismatic.ngrok.io
+    upstream:
+      url: 3000
+
