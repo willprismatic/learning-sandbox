@@ -22,6 +22,7 @@ import {
   Bot,
   Database,
 } from "lucide-react";
+import { getCompanyName } from "@/lib/app-config";
 
 // LEARNING: This is where you'd import your integration platform's context
 // (e.g., usePrismatic) to show setup status badges and links to embedded screens.
@@ -60,6 +61,8 @@ const features = [
 ];
 
 export default function Dashboard() {
+  const companyName = getCompanyName();
+
   // LEARNING: This is where you'd use your integration platform's context to check
   // configuration status and show setup prompts (e.g., isConfigured, orgSetup, customerSetup).
 
@@ -81,7 +84,7 @@ export default function Dashboard() {
         {/* Hero */}
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Demo App
+            {companyName}
           </h1>
           <p className="mt-1 text-muted-foreground">
             A SaaS application with webhook-driven resource management, ready for integration platform implementation.

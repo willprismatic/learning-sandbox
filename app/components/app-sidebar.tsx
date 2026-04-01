@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { GalleryVerticalEnd } from "lucide-react";
+import { getCompanyName } from "@/lib/app-config";
 
 import {
   Sidebar,
@@ -58,6 +59,8 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const companyName = getCompanyName();
+
   return (
     <Sidebar variant="floating" {...props}>
       <SidebarHeader>
@@ -69,7 +72,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <GalleryVerticalEnd className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-medium">Demo App</span>
+                  <span className="font-medium">{companyName}</span>
                   <span className="">Sandbox</span>
                 </div>
               </a>

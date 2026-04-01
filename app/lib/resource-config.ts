@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getActiveResourceTypeSlug } from './app-config';
 
 /**
  * Resource field definition
@@ -253,6 +254,256 @@ export const todoConfig: ResourceTypeConfig = {
 };
 
 /**
+ * Customer resource type (Vaultline — QuickBooks)
+ */
+export const customerConfig: ResourceTypeConfig = {
+  type: 'customer',
+  displayName: 'Customer',
+  displayNamePlural: 'Customers',
+  description: 'Customer and account records',
+  fields: [
+    { name: 'name', label: 'Name', type: 'text', required: true },
+    { name: 'email', label: 'Email', type: 'email', required: true },
+    { name: 'company', label: 'Company', type: 'text', required: false },
+    { name: 'phone', label: 'Phone', type: 'text', required: false },
+    {
+      name: 'status',
+      label: 'Status',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' },
+        { value: 'prospect', label: 'Prospect' },
+      ],
+    },
+  ],
+  schema: z.object({
+    name: z.string().min(1, 'Name is required'),
+    email: z.string().email('Invalid email address'),
+    company: z.string().optional(),
+    phone: z.string().optional(),
+    status: z.enum(['active', 'inactive', 'prospect']),
+  }),
+};
+
+/**
+ * Shipment resource type (ShipHawk — Slack)
+ */
+export const shipmentConfig: ResourceTypeConfig = {
+  type: 'shipment',
+  displayName: 'Shipment',
+  displayNamePlural: 'Shipments',
+  description: 'Shipment tracking records',
+  fields: [
+    { name: 'trackingNumber', label: 'Tracking Number', type: 'text', required: true },
+    { name: 'origin', label: 'Origin', type: 'text', required: true },
+    { name: 'destination', label: 'Destination', type: 'text', required: true },
+    { name: 'carrier', label: 'Carrier', type: 'text', required: false },
+    { name: 'estimatedDelivery', label: 'Estimated Delivery', type: 'date', required: false },
+    {
+      name: 'status',
+      label: 'Status',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'pending', label: 'Pending' },
+        { value: 'in-transit', label: 'In Transit' },
+        { value: 'delivered', label: 'Delivered' },
+        { value: 'returned', label: 'Returned' },
+      ],
+    },
+  ],
+  schema: z.object({
+    trackingNumber: z.string().min(1, 'Tracking number is required'),
+    origin: z.string().min(1, 'Origin is required'),
+    destination: z.string().min(1, 'Destination is required'),
+    carrier: z.string().optional(),
+    estimatedDelivery: z.string().optional(),
+    status: z.enum(['pending', 'in-transit', 'delivered', 'returned']),
+  }),
+};
+
+/**
+ * Project resource type (PlanSync — Jira)
+ */
+export const projectConfig: ResourceTypeConfig = {
+  type: 'project',
+  displayName: 'Project',
+  displayNamePlural: 'Projects',
+  description: 'Project management records',
+  fields: [
+    { name: 'name', label: 'Project Name', type: 'text', required: true },
+    { name: 'description', label: 'Description', type: 'textarea', required: false },
+    { name: 'assignee', label: 'Assignee', type: 'text', required: false },
+    { name: 'dueDate', label: 'Due Date', type: 'date', required: false },
+    {
+      name: 'priority',
+      label: 'Priority',
+      type: 'select',
+      required: false,
+      options: [
+        { value: 'low', label: 'Low' },
+        { value: 'medium', label: 'Medium' },
+        { value: 'high', label: 'High' },
+      ],
+    },
+    {
+      name: 'status',
+      label: 'Status',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'planning', label: 'Planning' },
+        { value: 'active', label: 'Active' },
+        { value: 'on-hold', label: 'On Hold' },
+        { value: 'completed', label: 'Completed' },
+      ],
+    },
+  ],
+  schema: z.object({
+    name: z.string().min(1, 'Project name is required'),
+    description: z.string().optional(),
+    assignee: z.string().optional(),
+    dueDate: z.string().optional(),
+    priority: z.enum(['low', 'medium', 'high']).optional(),
+    status: z.enum(['planning', 'active', 'on-hold', 'completed']),
+  }),
+};
+
+/**
+ * Patient resource type (MedBridge — Salesforce)
+ */
+export const patientConfig: ResourceTypeConfig = {
+  type: 'patient',
+  displayName: 'Patient',
+  displayNamePlural: 'Patients',
+  description: 'Patient records',
+  fields: [
+    { name: 'name', label: 'Patient Name', type: 'text', required: true },
+    { name: 'email', label: 'Email', type: 'email', required: false },
+    { name: 'phone', label: 'Phone', type: 'text', required: false },
+    { name: 'dateOfBirth', label: 'Date of Birth', type: 'date', required: true },
+    { name: 'provider', label: 'Provider', type: 'text', required: false },
+    {
+      name: 'status',
+      label: 'Status',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'active', label: 'Active' },
+        { value: 'inactive', label: 'Inactive' },
+        { value: 'discharged', label: 'Discharged' },
+      ],
+    },
+  ],
+  schema: z.object({
+    name: z.string().min(1, 'Patient name is required'),
+    email: z.string().email('Invalid email address').optional().or(z.literal('')),
+    phone: z.string().optional(),
+    dateOfBirth: z.string().min(1, 'Date of birth is required'),
+    provider: z.string().optional(),
+    status: z.enum(['active', 'inactive', 'discharged']),
+  }),
+};
+
+/**
+ * Marketing Event resource type (DataPulse — Salesforce)
+ */
+export const marketingEventConfig: ResourceTypeConfig = {
+  type: 'marketing-event',
+  displayName: 'Marketing Event',
+  displayNamePlural: 'Marketing Events',
+  description: 'Marketing event records',
+  fields: [
+    { name: 'name', label: 'Event Name', type: 'text', required: true },
+    { name: 'description', label: 'Description', type: 'textarea', required: false },
+    { name: 'date', label: 'Event Date', type: 'date', required: true },
+    { name: 'attendees', label: 'Expected Attendees', type: 'number', required: false },
+    {
+      name: 'type',
+      label: 'Event Type',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'webinar', label: 'Webinar' },
+        { value: 'conference', label: 'Conference' },
+        { value: 'email-campaign', label: 'Email Campaign' },
+        { value: 'social', label: 'Social Media' },
+      ],
+    },
+    {
+      name: 'status',
+      label: 'Status',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'planned', label: 'Planned' },
+        { value: 'active', label: 'Active' },
+        { value: 'completed', label: 'Completed' },
+        { value: 'cancelled', label: 'Cancelled' },
+      ],
+    },
+  ],
+  schema: z.object({
+    name: z.string().min(1, 'Event name is required'),
+    description: z.string().optional(),
+    date: z.string().min(1, 'Event date is required'),
+    attendees: z.number().nonnegative().optional(),
+    type: z.enum(['webinar', 'conference', 'email-campaign', 'social']),
+    status: z.enum(['planned', 'active', 'completed', 'cancelled']),
+  }),
+};
+
+/**
+ * Campaign resource type (CloudVault — Mailchimp)
+ */
+export const campaignConfig: ResourceTypeConfig = {
+  type: 'campaign',
+  displayName: 'Campaign',
+  displayNamePlural: 'Campaigns',
+  description: 'Email campaign records',
+  fields: [
+    { name: 'name', label: 'Campaign Name', type: 'text', required: true },
+    { name: 'subject', label: 'Subject Line', type: 'text', required: false },
+    { name: 'sendDate', label: 'Send Date', type: 'date', required: false },
+    { name: 'recipientCount', label: 'Recipient Count', type: 'number', required: false },
+    {
+      name: 'type',
+      label: 'Campaign Type',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'regular', label: 'Regular' },
+        { value: 'automated', label: 'Automated' },
+        { value: 'ab-test', label: 'A/B Test' },
+      ],
+    },
+    {
+      name: 'status',
+      label: 'Status',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'draft', label: 'Draft' },
+        { value: 'scheduled', label: 'Scheduled' },
+        { value: 'sending', label: 'Sending' },
+        { value: 'sent', label: 'Sent' },
+        { value: 'archived', label: 'Archived' },
+      ],
+    },
+  ],
+  schema: z.object({
+    name: z.string().min(1, 'Campaign name is required'),
+    subject: z.string().optional(),
+    sendDate: z.string().optional(),
+    recipientCount: z.number().nonnegative().optional(),
+    type: z.enum(['regular', 'automated', 'ab-test']),
+    status: z.enum(['draft', 'scheduled', 'sending', 'sent', 'archived']),
+  }),
+};
+
+/**
  * Registry of all resource type configurations
  */
 export const resourceTypeRegistry: Record<string, ResourceTypeConfig> = {
@@ -260,6 +511,12 @@ export const resourceTypeRegistry: Record<string, ResourceTypeConfig> = {
   lead: leadConfig,
   ticket: ticketConfig,
   todo: todoConfig,
+  customer: customerConfig,
+  shipment: shipmentConfig,
+  project: projectConfig,
+  patient: patientConfig,
+  'marketing-event': marketingEventConfig,
+  campaign: campaignConfig,
 };
 
 /**
@@ -270,9 +527,16 @@ export function getResourceTypeConfig(type: string): ResourceTypeConfig | undefi
 }
 
 /**
- * Get all available resource types
+ * Get available resource types, filtered by NEXT_PUBLIC_RESOURCE_TYPE if set.
+ * When the env var is set, only that single type is returned.
+ * When unset, all registered types are returned.
  */
 export function getAllResourceTypes(): ResourceTypeConfig[] {
+  const activeSlug = getActiveResourceTypeSlug();
+  if (activeSlug) {
+    const config = resourceTypeRegistry[activeSlug];
+    return config ? [config] : Object.values(resourceTypeRegistry);
+  }
   return Object.values(resourceTypeRegistry);
 }
 

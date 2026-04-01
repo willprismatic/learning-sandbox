@@ -3,6 +3,7 @@
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GalleryVerticalEnd } from "lucide-react";
+import { getCompanyName } from "@/lib/app-config";
 import {
   Card,
   CardContent,
@@ -46,6 +47,8 @@ function LoginForm() {
     }
   };
 
+  const companyName = getCompanyName();
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader className="text-center">
@@ -54,7 +57,7 @@ function LoginForm() {
             <GalleryVerticalEnd className="size-5" />
           </div>
         </div>
-        <CardTitle className="text-xl">Demo App</CardTitle>
+        <CardTitle className="text-xl">{companyName}</CardTitle>
         <CardDescription>
           Enter the access code to continue
         </CardDescription>

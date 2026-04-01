@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { getCompanyName } from "@/lib/app-config";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,9 +13,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const companyName = getCompanyName();
+
 export const metadata: Metadata = {
-  title: "Demo App",
-  description: "SaaS demo application with webhook-driven integrations",
+  title: companyName,
+  description: `${companyName} — SaaS demo application with webhook-driven integrations`,
 };
 
 export default function RootLayout({
