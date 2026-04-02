@@ -504,6 +504,44 @@ export const campaignConfig: ResourceTypeConfig = {
 };
 
 /**
+ * Order resource type
+ */
+export const orderConfig: ResourceTypeConfig = {
+  type: 'order',
+  displayName: 'Order',
+  displayNamePlural: 'Orders',
+  description: 'Order records',
+  fields: [
+    { name: 'orderNumber', label: 'Order Number', type: 'text', required: true },
+    { name: 'customerName', label: 'Customer Name', type: 'text', required: true },
+    { name: 'amount', label: 'Amount', type: 'number', required: true },
+    { name: 'orderDate', label: 'Order Date', type: 'date', required: true },
+    { name: 'items', label: 'Items', type: 'number', required: false },
+    {
+      name: 'status',
+      label: 'Status',
+      type: 'select',
+      required: true,
+      options: [
+        { value: 'pending', label: 'Pending' },
+        { value: 'processing', label: 'Processing' },
+        { value: 'shipped', label: 'Shipped' },
+        { value: 'delivered', label: 'Delivered' },
+        { value: 'cancelled', label: 'Cancelled' },
+      ],
+    },
+  ],
+  schema: z.object({
+    orderNumber: z.string().min(1, 'Order number is required'),
+    customerName: z.string().min(1, 'Customer name is required'),
+    amount: z.number().positive('Amount must be positive'),
+    orderDate: z.string().min(1, 'Order date is required'),
+    items: z.number().nonnegative().optional(),
+    status: z.enum(['pending', 'processing', 'shipped', 'delivered', 'cancelled']),
+  }),
+};
+
+/**
  * Registry of all resource type configurations
  */
 export const resourceTypeRegistry: Record<string, ResourceTypeConfig> = {
@@ -517,6 +555,7 @@ export const resourceTypeRegistry: Record<string, ResourceTypeConfig> = {
   patient: patientConfig,
   'marketing-event': marketingEventConfig,
   campaign: campaignConfig,
+  order: orderConfig,
 };
 
 /**
