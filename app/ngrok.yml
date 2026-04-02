@@ -1,0 +1,19 @@
+# ngrok Configuration for Prismatic Training Sandbox
+#
+# Setup:
+# 1. Sign up / log in at https://dashboard.ngrok.com
+# 2. Copy your authtoken from https://dashboard.ngrok.com/get-started/your-authtoken
+# 3. Copy this file: cp ngrok.yml.example ngrok.yml
+# 4. Replace the authtoken and domain below with your assigned values
+# 5. Start the tunnel: npm run start:tunnel
+#
+# Run in a separate terminal alongside: npm run dev
+
+version: 3
+agent:
+  authtoken: 2NhOl2c2OuuXYr6ViUkwXJHnQyc_5PVSEvEXMtezwndX7Wrap
+endpoints:
+  - name: prismatic-sandbox
+    url: https://YOUR-DOMAIN.ngrok-free.app
+    upstream:
+      url: 3000
