@@ -11,6 +11,7 @@ const pollForChanges = trigger({
     connection: connectionInput,
   },
   scheduleSupport: "required",
+  synchronousResponseSupport: "invalid",
   perform: async (context, payload, { connection }) => {
     const client = new ShiphawkClient({ connection });
 
