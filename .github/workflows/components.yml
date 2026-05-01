@@ -1,0 +1,101 @@
+name: Deploy Custom Components
+
+on:
+  push:
+    branches:
+      - ww/shiphawk
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  list-components:
+    runs-on: ubuntu-latest
+    outputs:
+      components: ${{ steps.list-components.outputs.components }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: List components
+        id: list-components
+        run: |
+          components=$(ls -d prismatic/components/*/ | xargs -n 1 basename | jq -R -s -c 'split("\n")[:-1]')
+          echo "components=$components" >> "$GITHUB_OUTPUT"
+
+  build-component:
+    runs-on: ubuntu-latest
+    needs: [list-components]
+    strategy:
+      matrix:
+        component: ${{ fromJson(needs.list-components.outputs.components) }}
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Check if component needs building
+        id: component-filter
+        uses: dorny/paths-filter@v3.0.2
+        with:
+          filters: |
+            component:
+              - 'prismatic/components/${{ matrix.component }}/**'
+              - 'prismatic/shared-libs/${{ matrix.component }}/**'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+        if: steps.component-filter.outputs.component == 'true'
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./prismatic
+        if: steps.component-filter.outputs.component == 'true'
+      - name: Test ${{ matrix.component }} component
+        run: npm run test
+        working-directory: ./prismatic/components/${{ matrix.component }}
+        if: steps.component-filter.outputs.component == 'true'
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+      - name: Build ${{ matrix.component }} component
+        run: npm run build
+        working-directory: ./prismatic/components/${{ matrix.component }}
+        if: steps.component-filter.outputs.component == 'true'
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.component }}-${{ github.run_id }}
+          path: ./prismatic/components/${{ matrix.component }}/dist
+        if: steps.component-filter.outputs.component == 'true'
+
+  publish-component:
+    needs: [list-components, build-component]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        component: ${{ fromJson(needs.list-components.outputs.components) }}
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Check if component needs publishing
+        id: component-filter
+        uses: dorny/paths-filter@v3.0.2
+        with:
+          filters: |
+            component:
+              - 'prismatic/components/${{ matrix.component }}/**'
+              - 'prismatic/shared-libs/${{ matrix.component }}/**'
+      - name: Download build artifacts
+        uses: actions/download-artifact@v5
+        with:
+          name: ${{ matrix.component }}-${{ github.run_id }}
+          path: ./prismatic/components/${{ matrix.component }}/dist
+        if: steps.component-filter.outputs.component == 'true'
+      - name: Publish ${{ matrix.component }}
+        uses: prismatic-io/component-publisher@v2.0
+        with:
+          COMPONENT_PATH: ./prismatic/components/${{ matrix.component }}
+          PRISMATIC_URL: https://app.prismatic.io
+          PRISM_REFRESH_TOKEN: ${{ secrets.PRISMATIC_REFRESH_TOKEN_WILL }}
+          PRISMATIC_TENANT_ID: 28d98d86-fb78-4c04-b317-0e73ec4479fb
+        if: steps.component-filter.outputs.component == 'true'

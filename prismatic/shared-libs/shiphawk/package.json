@@ -1,0 +1,9 @@
+{
+  "name": "@shiphawk/shiphawk-lib",
+  "version": "1.0.0",
+  "description": "Shared logic for integrating with ShipHawk",
+  "dependencies": {
+    "@prismatic-io/spectral": "^10.17.1",
+    "axios": "^1.6.0"
+  }
+}
