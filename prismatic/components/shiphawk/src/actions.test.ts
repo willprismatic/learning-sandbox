@@ -13,6 +13,56 @@ import type {
 
 dotenv.config({ path: ".env.testing" });
 
+jest.mock("@shiphawk/shiphawk-lib", () => ({
+  ShiphawkClient: jest.fn().mockImplementation(() => ({
+    shipment: {
+      list: jest.fn().mockResolvedValue({
+        success: true,
+        data: [
+          {
+            id: 1,
+            type: "shipment",
+            data: { trackingNumber: "TRK-001", origin: "Chicago, IL", destination: "New York, NY", status: "pending" },
+            createdAt: "2026-01-01T00:00:00Z",
+            updatedAt: "2026-01-01T00:00:00Z",
+          },
+        ],
+        pagination: { page: 1, pageSize: 10, total: 1, totalPages: 1 },
+      }),
+      get: jest.fn().mockResolvedValue({
+        success: true,
+        data: {
+          id: 42,
+          type: "shipment",
+          data: { trackingNumber: "TEST-SHIPHAWK-001", origin: "Chicago, IL", destination: "New York, NY", status: "pending" },
+          createdAt: "2026-01-01T00:00:00Z",
+          updatedAt: "2026-01-01T00:00:00Z",
+        },
+      }),
+      create: jest.fn().mockResolvedValue({
+        success: true,
+        id: 42,
+        type: "shipment",
+        message: "Created successfully",
+      }),
+      update: jest.fn().mockResolvedValue({
+        success: true,
+        data: {
+          id: 42,
+          type: "shipment",
+          data: { trackingNumber: "TEST-SHIPHAWK-001", origin: "Chicago, IL", destination: "New York, NY", status: "in-transit" },
+          createdAt: "2026-01-01T00:00:00Z",
+          updatedAt: "2026-01-01T00:00:00Z",
+        },
+      }),
+      delete: jest.fn().mockResolvedValue({
+        success: true,
+        message: "Deleted successfully",
+      }),
+    },
+  })),
+}));
+
 const harness = createHarness(myComponent);
 
 const testConnection = createConnection(connections[0], {
