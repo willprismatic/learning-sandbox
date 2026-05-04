@@ -97,5 +97,5 @@ jobs:
           COMPONENT_PATH: ./prismatic/components/${{ matrix.component }}
           PRISMATIC_URL: https://app.prismatic.io
           PRISM_REFRESH_TOKEN: ${{ secrets.PRISMATIC_REFRESH_TOKEN_WILL }}
-          PRISMATIC_TENANT_ID: 28d98d86-fb78-4c04-b317-0e73ec4479fb
+          PRISMATIC_TENANT_ID: 08dd15ba-a6d9-4452-9407-139d61e57e88
         if: steps.component-filter.outputs.component == 'true'
