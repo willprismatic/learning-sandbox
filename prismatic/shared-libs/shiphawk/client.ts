@@ -13,7 +13,7 @@ export class ShiphawkClient {
 
   constructor({
     connection,
-    resourceType = "shipment",
+    resourceType = "order",
   }: {
     connection: Connection;
     resourceType?: string;
@@ -33,13 +33,17 @@ export class ShiphawkClient {
   }
 
   private handleError(error: unknown): never {
-    if (error instanceof AxiosError && error.response?.data) {
-      const apiError = error.response.data;
-      throw new Error(
-        `API Error: ${apiError.message || "Unknown error"}${
-          apiError.errors ? " — " + JSON.stringify(apiError.errors) : ""
-        }`
-      );
+    if (error instanceof AxiosError) {
+      const status = error.response?.status;
+      const data = error.response?.data;
+      if (data && typeof data === "object") {
+        const message = data.message || data.error || JSON.stringify(data);
+        throw new Error(`API Error ${status}: ${message}`);
+      }
+      if (data) {
+        throw new Error(`API Error ${status}: ${String(data).slice(0, 200)}`);
+      }
+      throw new Error(`Network Error: ${error.message}`);
     }
     throw error;
   }

@@ -11,9 +11,9 @@
 
 version: 3
 agent:
-  authtoken: 2NhOl2c2OuuXYr6ViUkwXJHnQyc_5PVSEvEXMtezwndX7Wrap
+  authtoken: 3DJG7QXWFBTztzU8wXqJarrgjW5_4yGTiPrvgwVV45o5s3HcX
 endpoints:
   - name: prismatic-sandbox
-    url: https://YOUR-DOMAIN.ngrok-free.app
+    url: https://taekwondo-relapsing-backlash.ngrok-free.dev
     upstream:
       url: 3000

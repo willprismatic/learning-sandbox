@@ -11,7 +11,7 @@ export const shiphawkConnection = connection({
       label: "Base URL",
       type: "string",
       required: true,
-      default: "https://shiphawk.ngrok-free.app/api",
+      default: "https://taekwondo-relapsing-backlash.ngrok-free.dev/api",
       example: "https://your-domain.ngrok-free.app/api",
     },
     apiKey: {
